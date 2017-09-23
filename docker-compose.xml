@@ -1,0 +1,37 @@
+version: '2' 
+
+services:
+  quexml:
+    image: acspri/quexml
+    ports:
+      - 9090:80
+    volumes:
+      - /tmp/quexf:/images:z
+  quexf:
+    image: acspri/quexf
+    depends_on:
+      - mysql
+    ports:
+      - 8080:80
+    volumes:
+      - /tmp/quexf:/forms:z
+    environment:
+      QUEXF_DB_PASSWORD: example
+      QUEXF_ADMIN_PASSWORD: password
+  mysql:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+  limesurvey:
+    ports:
+      - 8888:80
+    volumes:
+      - mysql:/var/lib/mysql
+      - upload:/app/upload
+    image:
+      crramirez/limesurvey:latest
+# volumes for limesurvey only
+volumes:
+  mysql:
+  upload:
